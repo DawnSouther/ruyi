@@ -19,7 +19,8 @@ export class AppComponent implements AfterViewInit {
   playerEle = viewChild.required<ElementRef<HTMLDivElement>>('player');
 
   ngAfterViewInit(): void {
-    const url = localStorage.getItem('current') ?? '';
+    let url = localStorage.getItem('current');
+    url = url ? (BASE_URL + url) : '';
     this.dp = new DPlayer({
       container: this.playerEle().nativeElement,
       video: {
