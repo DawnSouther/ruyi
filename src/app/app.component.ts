@@ -1,38 +1,60 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatListModule, MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
-import DPlayer, { DPlayerDanmaku } from 'dplayer';
+import DPlayer, { DPlayerDanmaku, DPlayerEvents } from 'dplayer';
+import {MatProgressBar, MatProgressBarModule, ProgressBarMode} from '@angular/material/progress-bar';
+
 const BASE_URL = 'https://file.note.0moe.cn/video/';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MatListModule, MatGridListModule],
+  imports: [RouterOutlet, MatListModule, MatGridListModule,MatProgressBarModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements AfterViewInit {
+  constructor(
+    private cdr: ChangeDetectorRef
+  ){
+
+  }
 
   dp!: DPlayer;
   playerEle = viewChild.required<ElementRef<HTMLDivElement>>('player');
+  listEle = viewChild.required<MatSelectionList>('shoes');
+  loading:ProgressBarMode ='determinate';
 
   ngAfterViewInit(): void {
     let url = localStorage.getItem('current');
+    const actived = this.listEle().selectAll().find(v => v.value === url);
+    if(actived){
+      this.listEle().selectedOptions.select(actived)
+    }
     url = url ? (BASE_URL + url) : '';
+
     this.dp = new DPlayer({
       container: this.playerEle().nativeElement,
       video: {
         url
       },
     });
+    this.dp.on("loadstart" as DPlayerEvents, () => {
+      this.loading= 'indeterminate';
+      this.cdr.markForCheck();
+    })
+    this.dp.on('loadeddata' as DPlayerEvents, () => {
+      this.loading= 'determinate';
+      this.cdr.markForCheck();
+    })
   }
 
   change(event: MatSelectionListChange) {
     const url = event.options[0].value;
     localStorage.setItem('current', url);
-    this.dp.switchVideo({ url: BASE_URL + url }, {} as DPlayerDanmaku);
+    this.dp.switchVideo({ url: BASE_URL + url }, undefined as any);
   }
 
   title = 'ruyi';
