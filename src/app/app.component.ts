@@ -2,7 +2,6 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, E
 import { RouterOutlet } from '@angular/router';
 import { MatListModule, MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
-import DPlayer, { DPlayerDanmaku, DPlayerEvents } from 'dplayer';
 import {MatProgressBar, MatProgressBarModule, ProgressBarMode} from '@angular/material/progress-bar';
 
 const BASE_URL = 'https://file.note.0moe.cn/video/';
@@ -25,7 +24,7 @@ export class AppComponent implements AfterViewInit {
   dp!: DPlayer;
   playerEle = viewChild.required<ElementRef<HTMLDivElement>>('player');
   listEle = viewChild.required<MatSelectionList>('shoes');
-  loading:ProgressBarMode ='determinate';
+  loading ='none';
 
   ngAfterViewInit(): void {
     let url = localStorage.getItem('current');
@@ -41,12 +40,12 @@ export class AppComponent implements AfterViewInit {
         url
       },
     });
-    this.dp.on("loadstart" as DPlayerEvents, () => {
-      this.loading= 'indeterminate';
+    this.dp.on("loadstart" as any, () => {
+      this.loading= 'block';
       this.cdr.markForCheck();
     })
-    this.dp.on('loadeddata' as DPlayerEvents, () => {
-      this.loading= 'determinate';
+    this.dp.on('loadeddata' as any, () => {
+      this.loading= 'none';
       this.cdr.markForCheck();
     })
   }

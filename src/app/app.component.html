@@ -1,14 +1,14 @@
-<mat-progress-bar [mode]="loading" value="0"></mat-progress-bar>
+<mat-progress-bar [style.display]="loading" mode="indeterminate" value="0" style="position: fixed;"></mat-progress-bar>
 <div style="height: 100%;display: flex;">
   <div style="display: block;width: 300px;">
-    <p>
+    <p style="height: 40px;">
       当前播放: {{shoes.selectedOptions.hasValue() ? shoes.selectedOptions.selected[0].value : '无'}}
     </p>
     <mat-selection-list
       #shoes
       [multiple]="false"
       (selectionChange)="change($event)"
-      style="overflow-y: scroll;height: 100%;"
+      style="overflow-y: scroll;height: calc(100% - 70px);"
     >
       @for (video of videos; track video) {
       <mat-list-option [value]="video">{{video}}</mat-list-option>

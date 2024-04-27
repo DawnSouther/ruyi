@@ -27,13 +27,20 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
+              {
+                "glob": "CNAME",
+                "input": "src/assets/",
+                "output": "/"
+              },
               "src/assets"
             ],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+
+            ]
           },
           "configurations": {
             "production": {
